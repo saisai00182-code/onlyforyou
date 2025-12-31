@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For You</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Italiana&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{
+    height:100%;
+    overflow:hidden;
+    font-family:'Playfair Display', serif;
+    cursor:pointer;
+}
+
+/* BACKGROUND */
+.bg{
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at top left, #ffd6e8, transparent 50%),
+        radial-gradient(circle at bottom right, #ff8fc4, transparent 55%),
+        linear-gradient(180deg, #ffc1dc, #ff6fae, #c2185b);
+    animation:bgBreath 22s ease-in-out infinite alternate;
+    z-index:-2;
+}
+@keyframes bgBreath{
+    from{filter:brightness(1);}
+    to{filter:brightness(1.08);}
+}
+
+/* FLOWERS */
+.flower-layer{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:-1;
+}
+.flower{
+    position:absolute;
+    font-size:26px;
+    opacity:0.22;
+    animation:float linear infinite;
+}
+@keyframes float{
+    from{transform:translateY(-10vh) rotate(0deg);}
+    to{transform:translateY(120vh) rotate(160deg);}
+}
+
+/* INTRO */
+.intro{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-family:'Italiana', serif;
+    font-size:32px;
+    color:#7a1c45;
+    letter-spacing:1px;
+    background:rgba(255,182,213,0.25);
+    backdrop-filter:blur(2px);
+    transition:opacity 1.2s ease;
+    z-index:10;
+}
+.intro.hide{
+    opacity:0;
+    pointer-events:none;
+}
+
+/* TEXT */
+.stage{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+}
+.text{
+    max-width:900px;
+    text-align:center;
+    color:#4a0f2c;
+    font-size:22px;
+    line-height:1.9;
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 1.6s ease, transform 1.6s ease;
+}
+.text.show{
+    opacity:1;
+    transform:translateY(0);
+}
+.signature{
+    font-style:italic;
+    font-size:20px;
+    color:#7a1c45;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" src="myheart.mp3.mp3" loop></audio>
+
+<div class="bg"></div>
+<div class="flower-layer" id="flowers"></div>
+
+<div class="intro" id="intro">
+    Tap and read this slowly, sweety
+</div>
+
+<div class="stage">
+    <div id="content" class="text"></div>
+</div>
+
+<script>
+/* FLOWERS */
+const flowerLayer=document.getElementById("flowers");
+const flowers=["🌸","💮","🌺"];
+for(let i=0;i<40;i++){
+    const f=document.createElement("div");
+    f.className="flower";
+    f.innerHTML=flowers[Math.floor(Math.random()*flowers.length)];
+    f.style.left=Math.random()*100+"vw";
+    f.style.fontSize=(20+Math.random()*26)+"px";
+    f.style.animationDuration=(20+Math.random()*20)+"s";
+    f.style.opacity=0.18+Math.random()*0.25;
+    flowerLayer.appendChild(f);
+}
+
+/* TEXT */
+const lines=[
+"I’ve been trying to find the right words for a long time, and every time I start, I realize how hard it is to fit my whole heart into sentences.",
+"Somehow, without forcing it, you became more than just someone I love. In my thoughts, you’re already my wife — the person I imagine my life with.",
+"You are present in my life even when nothing is happening.",
+"That’s when I know my cutiee isn’t just important to me — you are part of me.",
+"I don’t love you for attention. I love you because my heart chose you naturally.",
+"But I also want to be honest with you.",
+"I know I annoyed you sometimes. If that ever made you uncomfortable, I’m truly sorry.",
+"I never wanted to disturb your peace. I was just afraid of losing you.",
+"I want you all the time. I need you in my life.",
+"Not to control you. Just to love you honestly.",
+"I want to show love with patience and actions.",
+"If my love was too loud sometimes, I’m sorry.",
+"It came from a heart that already chose you.",
+"<span class='signature'>This is from your idiot,<br>who truly loves you,<br>but can’t say it to you.</span>"
+];
+
+let index=-1;
+const content=document.getElementById("content");
+const music=document.getElementById("bgMusic");
+const intro=document.getElementById("intro");
+let started=false;
+
+function nextLine(){
+    // Music plays on the very first tap
+    if(!started){
+        intro.classList.add("hide");
+        music.play().catch(error => console.log("Audio play failed:", error));
+        started=true;
+    }
+    
+    if(index>=lines.length-1) return;
+    index++;
+    content.classList.remove("show");
+    setTimeout(()=>{
+        content.innerHTML=lines[index];
+        content.classList.add("show");
+    },400);
+}
+
+document.body.addEventListener("click",nextLine);
+</script>
+
+</body>
+</html>
